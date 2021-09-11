@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
         rb = this.GetComponent<Rigidbody2D>();
         sr = this.GetComponent<SpriteRenderer>();
 
-        ChangeColour();
+        ChangeColour(Random.Range(0, colours.Length));
     }
 
     private void Update()
@@ -30,9 +30,8 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void ChangeColour()
+    private void ChangeColour(int index)
     {
-        int index = Random.Range(0, colours.Length);
 
         switch (index)
         {
@@ -56,15 +55,43 @@ public class Player : MonoBehaviour
 
     }
 
+    private void ColourSwitch(string changeToColour)
+    {
+        switch (changeToColour)
+        {
+            case "Red":
+                ChangeColour(0);
+                break;
+            case "Blue":
+                ChangeColour(1);
+                break;
+            case "Yellow":
+                ChangeColour(2);
+                break;
+            case "Green":
+                ChangeColour(3);
+                break;
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag(currentColour))
+        //Checking if collision with colour switcher detected
+        if (other.transform.parent != null && other.transform.parent.CompareTag("ColourChanger"))
         {
-            Debug.Log("I can pass");
+            ColourSwitch(other.tag);
+            Destroy(other.gameObject);
         }
         else
         {
-            Debug.Log("Game Over");
+            if (other.gameObject.CompareTag(currentColour))
+            {
+                Debug.Log("I can pass");
+            }
+            else
+            {
+                Debug.Log("Game Over");
+            }
         }
     }
 
